@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <!--
+    Mono.TextTemplating.Build.targets
+    Hooks into the build pipeline to transform .tt files before compilation.
+  -->
+
+  <!-- Register the MSBuild task -->
+  <UsingTask
+    TaskName="Mono.TextTemplating.Build.TransformTemplates"
+    AssemblyFile="$(MSBuildThisFileDirectory)..\tasks\net10.0\Mono.TextTemplating.Build.dll" />
+
+  <!-- Transform .tt files before the CoreCompile target -->
+  <Target
+    Name="TransformT4Templates"
+    BeforeTargets="CoreCompile"
+    Condition="'@(T4Template)' != ''"
+    Inputs="@(T4Template)"
+    Outputs="@(T4Template->'$(T4TemplateOutputDir)%(RecursiveDir)%(Filename).generated.cs')">
+
+    <Message
+      Text="Transforming T4 templates: @(T4Template->'%(Filename)','; ')"
+      Importance="high" />
+
+    <TransformTemplates
+      Templates="@(T4Template)"
+      OutputDir="$(T4TemplateOutputDir)"
+      References="@(ReferencePathWithRefAssemblies)"
+      Imports="$(T4Imports)"
+      IncludePaths="$(T4IncludePaths)"
+      ReferencePaths="$(T4ReferencePaths)"
+      Preprocess="$(T4Preprocess)">
+
+      <Output TaskParameter="GeneratedFiles" ItemName="T4GeneratedCompile" />
+    </TransformTemplates>
+
+    <!-- Add generated files to compilation -->
+    <ItemGroup>
+      <Compile Include="@(T4GeneratedCompile)" KeepDuplicates="false" />
+      <FileWrites Include="@(T4GeneratedCompile)" />
+    </ItemGroup>
+
+  </Target>
+
+  <!-- Clean up generated files -->
+  <Target
+    Name="CleanT4Templates"
+    AfterTargets="CoreClean">
+
+    <RemoveDir Directories="$(T4TemplateOutputDir)" Condition="Exists('$(T4TemplateOutputDir)')" />
+  </Target>
+
+</Project>

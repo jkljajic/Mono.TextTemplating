@@ -1,0 +1,40 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>Mono.TextTemplating</RootNamespace>
+    <AssemblyName>Mono.TextTemplating</AssemblyName>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+
+    <!-- Assembly attributes (from old AssemblyInfo.cs) -->
+    <Title>Mono.TextTemplating</Title>
+    <Description>An open-source, cross-platform implementation of Visual Studio's T4 text templating engine. Process and preprocess .tt template files on .NET 8+, with full compatibility with the Microsoft.VisualStudio.TextTemplating API surface.</Description>
+    <Company>The Mono Project</Company>
+    <Product>Mono.TextTemplating</Product>
+    <Copyright>MIT</Copyright>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageProjectUrl>https://github.com/jkljajic/Mono.TextTemplating</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/jkljajic/Mono.TextTemplating</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>t4;texttemplating;code-generation;template;tt;mono</PackageTags>
+
+    <!-- NuGet packaging -->
+    <VersionPrefix>3.0.0</VersionPrefix>
+    <VersionSuffix>preview.1</VersionSuffix>
+    <IsPackable>true</IsPackable>
+    <PackageOutputPath>$(MSBuildThisFileDirectory)..\artifacts</PackageOutputPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.CodeDom" Version="9.0.0" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.13.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
+</Project>

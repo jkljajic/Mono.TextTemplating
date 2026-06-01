@@ -1,0 +1,26 @@
+<Project>
+  <PropertyGroup>
+    <!-- Shared properties for all projects -->
+    <Authors>Mono Project, Community Contributors</Authors>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <Copyright>MIT License</Copyright>
+
+    <!-- Code quality -->
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+    <AnalysisLevel>latest</AnalysisLevel>
+    <AnalysisMode>Recommended</AnalysisMode>
+
+    <!-- Debug info -->
+    <DebugType>embedded</DebugType>
+    <EmbedAllSources>true</EmbedAllSources>
+
+    <!-- Source Link -->
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+  </PropertyGroup>
+
+  <!-- All projects default to net10.0 unless overridden -->
+</Project>

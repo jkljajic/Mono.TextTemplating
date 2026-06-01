@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <!--
+    Mono.TextTemplating.Build.props
+    Automatically discovers .tt files and configures them as T4Template items.
+  -->
+
+  <PropertyGroup>
+    <T4TemplateOutputDir Condition="'$(T4TemplateOutputDir)' == ''">$(IntermediateOutputPath)GeneratedT4\</T4TemplateOutputDir>
+    <T4Preprocess Condition="'$(T4Preprocess)' == ''">false</T4Preprocess>
+    <!-- Suppress the default VS TextTemplating target if using this package -->
+    <TextTemplatingEnabled Condition="'$(TextTemplatingEnabled)' == ''">false</TextTemplatingEnabled>
+  </PropertyGroup>
+
+  <!-- Discover .tt files in the project directory -->
+  <ItemGroup Condition="'$(EnableDefaultT4Items)' != 'false'">
+    <T4Template Include="**\*.tt" Exclude="$(DefaultItemExcludes);$(T4TemplateOutputDir)**\*.tt">
+      <Generator>MonoTextTemplatingFileGenerator</Generator>
+      <LastGenOutput>$(T4TemplateOutputDir)%(RecursiveDir)%(Filename).generated.cs</LastGenOutput>
+    </T4Template>
+    <None Remove="@(T4Template)" />
+    <T4GeneratedCompile Include="$(T4TemplateOutputDir)**\*.generated.cs" />
+  </ItemGroup>
+
+</Project>

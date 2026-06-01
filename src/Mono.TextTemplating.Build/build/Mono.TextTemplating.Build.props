@@ -3,24 +3,25 @@
 
   <!--
     Mono.TextTemplating.Build.props
-    Automatically discovers .tt files and configures them as T4Template items.
+    Auto-discovers .tt files and configures T4 item groups.
   -->
 
   <PropertyGroup>
-    <T4TemplateOutputDir Condition="'$(T4TemplateOutputDir)' == ''">$(IntermediateOutputPath)GeneratedT4\</T4TemplateOutputDir>
+    <T4TemplateOutputDir Condition="'$(T4TemplateOutputDir)' == ''">$(OutDir)</T4TemplateOutputDir>
     <T4Preprocess Condition="'$(T4Preprocess)' == ''">false</T4Preprocess>
-    <!-- Suppress the default VS TextTemplating target if using this package -->
     <TextTemplatingEnabled Condition="'$(TextTemplatingEnabled)' == ''">false</TextTemplatingEnabled>
   </PropertyGroup>
 
-  <!-- Discover .tt files in the project directory -->
+  <!-- Discover .tt files. Run after build (T4PostBuildTemplate pipeline).
+       Set EnableDefaultT4Items=false in your .csproj to opt out. -->
   <ItemGroup Condition="'$(EnableDefaultT4Items)' != 'false'">
-    <T4Template Include="**\*.tt" Exclude="$(DefaultItemExcludes);$(T4TemplateOutputDir)**\*.tt">
+    <T4PostBuildTemplate Include="**\*.tt" Exclude="$(DefaultItemExcludes)">
       <Generator>MonoTextTemplatingFileGenerator</Generator>
       <LastGenOutput>$(T4TemplateOutputDir)%(RecursiveDir)%(Filename).generated.cs</LastGenOutput>
-    </T4Template>
-    <None Remove="@(T4Template)" />
-    <T4GeneratedCompile Include="$(T4TemplateOutputDir)**\*.generated.cs" />
+      <!-- Add T4Param_ metadata to pass parameters to the template -->
+      <!-- T4Param_TargetAssembly=$(TargetPath) — injected by .targets -->
+    </T4PostBuildTemplate>
+    <None Remove="@(T4PostBuildTemplate)" />
   </ItemGroup>
 
 </Project>

@@ -54,22 +54,24 @@ namespace Mono.TextTemplating.Compilation
 			var parseOptions = new CSharpParseOptions (languageVersion);
 			var syntaxTree = CSharpSyntaxTree.ParseText (sourceText, parseOptions);
 
-			// 3. Create compilation
+			// 3. Create compilation — only add references that are valid file paths
 			var metadataReferences = references
-				.Where (r => !string.IsNullOrEmpty (r))
+				.Where (r => !string.IsNullOrEmpty (r) && File.Exists (r))
 				.Select (r => MetadataReference.CreateFromFile (r))
-				.ToArray ();
+				.ToList ();
 
-			// Add core runtime references
+			// Add core runtime references (includes System.Linq, System, etc.)
 			var trustedAssemblies = ((string) AppContext.GetData ("TRUSTED_PLATFORM_ASSEMBLIES") ?? "").Split (Path.PathSeparator);
 			var runtimeRefs = trustedAssemblies
 				.Where (p => !string.IsNullOrEmpty (p) && File.Exists (p))
 				.Select (p => MetadataReference.CreateFromFile (p));
 
+			metadataReferences.AddRange (runtimeRefs);
+
 			var compilation = CSharpCompilation.Create (
 				settings.Name ?? "GeneratedTemplate",
 				new[] { syntaxTree },
-				metadataReferences.Concat (runtimeRefs).Distinct (MetadataReferenceEqualityComparer.Instance),
+				metadataReferences.Distinct (MetadataReferenceEqualityComparer.Instance),
 				new CSharpCompilationOptions (OutputKind.DynamicallyLinkedLibrary)
 					.WithOptimizationLevel (settings.Debug ? OptimizationLevel.Debug : OptimizationLevel.Release));
 

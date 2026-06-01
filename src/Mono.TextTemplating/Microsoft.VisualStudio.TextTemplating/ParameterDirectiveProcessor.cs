@@ -198,6 +198,7 @@ namespace Microsoft.VisualStudio.TextTemplating
 			}
 			
 			//if acquiredVariable is false, tries to gets the value from the call context
+#if NETFRAMEWORK
 			var checkCallContext = new CodeConditionStatement (
 				IsFalse (acquiredVariableRef),
 				new CodeVariableDeclarationStatement (typeof (object), "data",
@@ -205,6 +206,7 @@ namespace Microsoft.VisualStudio.TextTemplating
 				new CodeConditionStatement (NotNull (valRef), checkCastThenAssignVal));
 			
 			this.postStatements.Add (checkCallContext);
+#endif
 		}
 		
 		static CodeBinaryOperatorExpression NotNull (CodeExpression reference)
@@ -236,18 +238,20 @@ namespace Microsoft.VisualStudio.TextTemplating
 			if (!useMonoHack) {
 				foreach (CodeTypeMember member in members)
 					provider.GenerateCodeFromMember (member, sw, options);
+				return;
 			}
-			
+
+			// Mono-specific hack for old Mono 2.x which didn't implement GenerateCodeFromMember
 			var cgType = typeof (CodeGenerator);
 			var cgInit = cgType.GetMethod ("InitOutput", BindingFlags.NonPublic | BindingFlags.Instance);
 			var cgFieldGen = cgType.GetMethod ("GenerateField", BindingFlags.NonPublic | BindingFlags.Instance);
 			var cgPropGen = cgType.GetMethod ("GenerateProperty", BindingFlags.NonPublic | BindingFlags.Instance);
-			
+
 #pragma warning disable 0618
 			var generator = (CodeGenerator) provider.CreateGenerator ();
 #pragma warning restore 0618
 			var dummy = new CodeTypeDeclaration ("Foo");
-			
+
 			foreach (CodeTypeMember member in members) {
 				var f = member as CodeMemberField;
 				if (f != null) {

@@ -68,7 +68,9 @@ namespace Mono.TextTemplating.Tests
 		
 		public virtual string ResolveAssemblyReference (string assemblyReference)
 		{
-			throw new System.NotImplementedException();
+			if (System.IO.File.Exists (assemblyReference))
+				return assemblyReference;
+			return assemblyReference;
 		}
 		
 		public virtual Type ResolveDirectiveProcessor (string processorName)
@@ -85,17 +87,15 @@ namespace Mono.TextTemplating.Tests
 		
 		public virtual string ResolvePath (string path)
 		{
-			throw new System.NotImplementedException();
+			return null;
 		}
 		
 		public virtual void SetFileExtension (string extension)
 		{
-			throw new System.NotImplementedException();
 		}
 		
 		public virtual void SetOutputEncoding (System.Text.Encoding encoding, bool fromOutputDirective)
 		{
-			throw new System.NotImplementedException();
 		}
 		
 		public virtual IList<string> StandardAssemblyReferences {

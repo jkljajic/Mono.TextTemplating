@@ -21,6 +21,8 @@ TestResults/
 *.trx
 *.coverage
 coverage/
+temp_generated.cs
+tools/
 
 ## NuGet
 *.nuget.props
@@ -32,7 +34,8 @@ lib/
 
 ## Dotnet tool
 .dotnet/
-
+## Build tasks (generated, not committed)
+tasks/
 ## Temporary files
 *.tmp
 *.~vs

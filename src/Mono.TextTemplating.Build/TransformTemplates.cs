@@ -157,6 +157,16 @@ namespace Mono.TextTemplating.Build
 					generator.ReferencePaths.Add (path);
 			}
 
+			// Pass custom parameters from item metadata (T4Param_Key=Value)
+			foreach (string metadataName in templateItem.MetadataNames) {
+				if (metadataName.StartsWith ("T4Param_", StringComparison.OrdinalIgnoreCase)) {
+					var paramName = metadataName.Substring ("T4Param_".Length);
+					var paramValue = templateItem.GetMetadata (metadataName);
+					if (!string.IsNullOrEmpty (paramName) && paramValue != null)
+						generator.AddParameter (null, null, paramName, paramValue);
+				}
+			}
+
 			var outputDir = Path.GetDirectoryName (outputFile);
 			if (!string.IsNullOrEmpty (outputDir) && !Directory.Exists (outputDir))
 				Directory.CreateDirectory (outputDir);

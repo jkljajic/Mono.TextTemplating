@@ -3,52 +3,48 @@
 
   <!--
     Mono.TextTemplating.Build.targets
-    Hooks into the build pipeline to transform .tt files before compilation.
+    Post-build T4 pipeline: processes .tt files AFTER compilation,
+    so templates can reflect on the built assembly.
   -->
 
-  <!-- Register the MSBuild task -->
   <UsingTask
     TaskName="Mono.TextTemplating.Build.TransformTemplates"
     AssemblyFile="$(MSBuildThisFileDirectory)..\tasks\net10.0\Mono.TextTemplating.Build.dll" />
 
-  <!-- Transform .tt files before the CoreCompile target -->
-  <Target
-    Name="TransformT4Templates"
-    BeforeTargets="CoreCompile"
-    Condition="'@(T4Template)' != ''"
-    Inputs="@(T4Template)"
-    Outputs="@(T4Template->'$(T4TemplateOutputDir)%(RecursiveDir)%(Filename).generated.cs')">
+  <Target Name="TransformT4Templates"
+          AfterTargets="Build"
+          Condition="'@(T4PostBuildTemplate)' != ''"
+          Inputs="@(T4PostBuildTemplate)"
+          Outputs="@(T4PostBuildTemplate->'%(LastGenOutput)')">
 
-    <Message
-      Text="Transforming T4 templates: @(T4Template->'%(Filename)','; ')"
-      Importance="high" />
+    <Message Text="[T4] Transforming @(T4PostBuildTemplate->'%(Filename)','; ')" Importance="high" />
 
-    <TransformTemplates
-      Templates="@(T4Template)"
-      OutputDir="$(T4TemplateOutputDir)"
-      References="@(ReferencePathWithRefAssemblies)"
-      Imports="$(T4Imports)"
-      IncludePaths="$(T4IncludePaths)"
-      ReferencePaths="$(T4ReferencePaths)"
-      Preprocess="$(T4Preprocess)">
-
-      <Output TaskParameter="GeneratedFiles" ItemName="T4GeneratedCompile" />
-    </TransformTemplates>
-
-    <!-- Add generated files to compilation -->
+    <!-- Inject $(TargetPath) if the template item doesn't already have it -->
     <ItemGroup>
-      <Compile Include="@(T4GeneratedCompile)" KeepDuplicates="false" />
-      <FileWrites Include="@(T4GeneratedCompile)" />
+      <T4PostBuildTemplate>
+        <T4Param_TargetAssembly Condition="'%(T4PostBuildTemplate.T4Param_TargetAssembly)' == ''">$(TargetPath)</T4Param_TargetAssembly>
+      </T4PostBuildTemplate>
     </ItemGroup>
 
+    <TransformTemplates
+      Templates="@(T4PostBuildTemplate)"
+      OutputDir="$(T4TemplateOutputDir)"
+      References="@(ReferencePathWithRefAssemblies);$(TargetPath)"
+      Preprocess="$(T4Preprocess)">
+
+      <Output TaskParameter="GeneratedFiles" ItemName="T4GeneratedOutput" />
+    </TransformTemplates>
+
+    <ItemGroup>
+      <FileWrites Include="@(T4GeneratedOutput)" />
+      <Content Include="@(T4GeneratedOutput)" Pack="false" />
+    </ItemGroup>
   </Target>
 
-  <!-- Clean up generated files -->
-  <Target
-    Name="CleanT4Templates"
-    AfterTargets="CoreClean">
-
-    <RemoveDir Directories="$(T4TemplateOutputDir)" Condition="Exists('$(T4TemplateOutputDir)')" />
+  <!-- Clean generated files -->
+  <Target Name="CleanT4Templates" AfterTargets="CoreClean">
+    <RemoveDir Directories="$(T4TemplateOutputDir)$(T4GeneratedDir)" Condition="Exists('$(T4TemplateOutputDir)')" />
+    <Delete Files="@(T4PostBuildTemplate->'%(LastGenOutput)')" />
   </Target>
 
 </Project>

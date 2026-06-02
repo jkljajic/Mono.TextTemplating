@@ -36,3 +36,21 @@ indent_size = 2
 
 [*.md]
 trim_trailing_whitespace = false
+
+# Vendored Mono.Options code — suppress all analysis and doc warnings
+[src/Mono.TextTemplating.Cli/Options.cs]
+generated_code = true
+dotnet_diagnostic.CS1591.severity = none
+
+# Test projects — suppress warnings that are intentional in test code
+[tests/**/*.cs]
+dotnet_diagnostic.CA1707.severity = none       # underscores in BDD-style test method names
+dotnet_diagnostic.CA1822.severity = none       # test helpers can be static
+dotnet_diagnostic.CA1051.severity = none       # test helper visible fields
+dotnet_diagnostic.CA1859.severity = none       # concrete type preference not relevant in tests
+dotnet_diagnostic.CA1852.severity = none       # sealed not relevant in tests
+dotnet_diagnostic.CA2211.severity = none       # non-constant fields in test fixtures
+dotnet_diagnostic.CA1310.severity = none       # StringComparison not critical in tests
+dotnet_diagnostic.CS8625.severity = none       # nullable — intentional null in tests
+dotnet_diagnostic.CS8604.severity = none       # nullable — intentional null in tests
+dotnet_diagnostic.CS8603.severity = none       # nullable — intentional null return in tests

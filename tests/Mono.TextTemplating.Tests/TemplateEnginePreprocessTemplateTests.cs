@@ -107,6 +107,13 @@ namespace Mono.TextTemplating.Tests
 			string language = null;
 			string[] references = null;
 			
+			// Normalize line endings for cross-platform consistency
+			input = NormalizeNewlines (input);
+			var contentKeys = new System.Collections.Generic.List<string> (host.Contents.Keys);
+			foreach (var key in contentKeys) {
+				host.Contents[key] = NormalizeNewlines (host.Contents[key]);
+			}
+			
 			TemplatingEngine engine = new TemplatingEngine ();
 			string output = engine.PreprocessTemplate (input, host, className, classNamespace, out language, out references);
 			ReportErrors (host.Errors);
@@ -192,7 +199,7 @@ namespace Templating {
             this.GenerationEnvironment = null;
             
             #line 2 """"
-            this.Write(""Test\r\n"");
+            this.Write(""Test\n"");
             
             #line default
             #line hidden

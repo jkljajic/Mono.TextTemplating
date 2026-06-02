@@ -20,7 +20,7 @@
     <ToolCommandName>dotnet-t4</ToolCommandName>
     <PackageId>Mono.TextTemplating.Cli</PackageId>
     <VersionPrefix>3.0.0</VersionPrefix>
-    <VersionSuffix>preview.1</VersionSuffix>
+    <VersionSuffix>preview.2</VersionSuffix>
     <IsPackable>true</IsPackable>
 
     <AssemblyTitle>TextTransform</AssemblyTitle>

@@ -16,7 +16,7 @@
 
     <!-- Process each .tt individually via dotnet-t4 -->
     <Exec
-      Command="dotnet t4 -o &quot;%(T4PostBuildTemplate.LastGenOutput)&quot; -a TargetAssembly!$(TargetPath) -r $(TargetPath) &quot;%(T4PostBuildTemplate.Identity)&quot;"
+      Command="dotnet t4 -o &quot;%(T4PostBuildTemplate.LastGenOutput)&quot; -r $(TargetPath) &quot;%(T4PostBuildTemplate.Identity)&quot;"
       WorkingDirectory="$(MSBuildProjectDirectory)"
       ContinueOnError="true"
       Condition="'%(T4PostBuildTemplate.Identity)' != ''" />

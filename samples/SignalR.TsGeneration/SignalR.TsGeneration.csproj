@@ -8,14 +8,15 @@
     <IsPackable>false</IsPackable>
   </PropertyGroup>
 
-  <!-- T4 post-build: .tt → .ts next to the template, discovered by .props -->
+  <Import Project="..\..\src\Mono.TextTemplating.Build\build\Mono.TextTemplating.Build.props" />
+
+  <!-- .tt generates .ts, not .cs -->
   <ItemGroup>
     <T4PostBuildTemplate Update="Templates\**\*.tt">
-      <LastGenOutput>%(RootDir)%(Directory)%(Filename).ts</LastGenOutput>
+      <LastGenOutput>%(RelativeDir)%(Filename).generated.ts</LastGenOutput>
     </T4PostBuildTemplate>
   </ItemGroup>
 
-  <Import Project="..\..\src\Mono.TextTemplating.Build\build\Mono.TextTemplating.Build.props" />
   <Import Project="..\..\src\Mono.TextTemplating.Build\build\Mono.TextTemplating.Build.targets" />
 
 </Project>

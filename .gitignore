@@ -39,6 +39,7 @@ tasks/
 
 ## Local NuGet feed
 .local-nuget/
-## Temporary files
+## T4 generated output
+*.generated.*
 *.tmp
 *.~vs

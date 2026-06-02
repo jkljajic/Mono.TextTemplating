@@ -65,6 +65,17 @@ namespace Mono.TextTemplating
 		/// Set to CodeDom to use System.CodeDom for backward compatibility (.NET Framework only).
 		/// </summary>
 		public TemplateCompilerType CompilerType { get; set; } = TemplateCompilerType.Roslyn;
+
+		/// <summary>
+		/// Original template source text. When set with Debug=true, embedded source is
+		/// included in the PDB so debuggers (VS/VS Code) can show the .tt source at breakpoints.
+		/// </summary>
+		public string SourceText { get; set; }
+
+		/// <summary>
+		/// Path to the .tt template file. Used for #line directives and embedded PDB source.
+		/// </summary>
+		public string SourceFilePath { get; set; }
 	}
 	
 	public class CustomDirective

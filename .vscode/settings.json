@@ -1,0 +1,70 @@
+{
+  "files.associations": {
+    "*.tt": "t4",
+    "*.t4": "t4"
+  },
+  "editor.tokenColorCustomizations": {
+    "textMateRules": [
+      {
+        "scope": [
+          "punctuation.definition.directive.begin.t4",
+          "punctuation.definition.directive.end.t4",
+          "punctuation.definition.expression.begin.t4",
+          "punctuation.definition.expression.end.t4",
+          "punctuation.definition.class-feature.begin.t4",
+          "punctuation.definition.class-feature.end.t4",
+          "punctuation.definition.block.begin.t4",
+          "punctuation.definition.block.end.t4"
+        ],
+        "settings": { "foreground": "#569CD6", "fontStyle": "bold" }
+      },
+      {
+        "scope": [
+          "keyword.control.directive.template.t4",
+          "keyword.control.directive.assembly.t4",
+          "keyword.control.directive.import.t4",
+          "keyword.control.directive.output.t4",
+          "keyword.control.directive.include.t4",
+          "keyword.control.directive.parameter.t4",
+          "keyword.control.directive.t4"
+        ],
+        "settings": { "foreground": "#C586C0", "fontStyle": "bold" }
+      },
+      {
+        "scope": "keyword.control.class-feature.t4",
+        "settings": { "foreground": "#C586C0", "fontStyle": "bold" }
+      },
+      {
+        "scope": "keyword.operator.expression.t4",
+        "settings": { "foreground": "#569CD6", "fontStyle": "bold" }
+      },
+      {
+        "scope": "entity.other.attribute-name.t4",
+        "settings": { "foreground": "#9CDCFE" }
+      },
+      {
+        "scope": "source.cs.embedded.t4",
+        "settings": {}
+      },
+      {
+        "scope": [
+          "constant.language.t4",
+          "constant.language.boolean.t4"
+        ],
+        "settings": { "foreground": "#CE9178" }
+      },
+      {
+        "scope": "string.quoted.double.t4",
+        "settings": { "foreground": "#CE9178" }
+      },
+      {
+        "scope": "string.quoted.single.t4",
+        "settings": { "foreground": "#CE9178" }
+      },
+      {
+        "scope": "comment.block.t4",
+        "settings": { "foreground": "#6A9955", "fontStyle": "italic" }
+      }
+    ]
+  }
+}

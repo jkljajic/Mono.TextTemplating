@@ -27,9 +27,11 @@ using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Emit;
+using Microsoft.CodeAnalysis.Text;
 
 namespace Mono.TextTemplating.Compilation
 {
@@ -75,13 +77,23 @@ namespace Mono.TextTemplating.Compilation
 				new CSharpCompilationOptions (OutputKind.DynamicallyLinkedLibrary)
 					.WithOptimizationLevel (settings.Debug ? OptimizationLevel.Debug : OptimizationLevel.Release));
 
-			// 4. Emit to memory stream
+			// 4. Emit with embedded source for debugging
 			using var ms = new MemoryStream ();
 			using var pdbStream = settings.Debug ? new MemoryStream () : null;
 
+			var emitOptions = new EmitOptions (debugInformationFormat: DebugInformationFormat.PortablePdb);
+			var embeddedTexts = new List<EmbeddedText> ();
+
+			// Embed original .tt source in PDB so debuggers show .tt, not generated C#
+			if (settings.Debug && !string.IsNullOrEmpty (settings.SourceText)) {
+				var sourcePath = settings.SourceFilePath ?? "template.tt";
+				var embeddedSource = SourceText.From (settings.SourceText, System.Text.Encoding.UTF8, SourceHashAlgorithm.Sha256);
+				embeddedTexts.Add (EmbeddedText.FromSource (sourcePath, embeddedSource));
+			}
+
 			EmitResult emitResult;
 			if (settings.Debug) {
-				emitResult = compilation.Emit (ms, pdbStream);
+				emitResult = compilation.Emit (ms, pdbStream, options: emitOptions, embeddedTexts: embeddedTexts);
 			} else {
 				emitResult = compilation.Emit (ms);
 			}
@@ -108,9 +120,22 @@ namespace Mono.TextTemplating.Compilation
 				return result;
 			}
 
-			// 6. Load the compiled assembly
-			ms.Seek (0, SeekOrigin.Begin);
-			var assembly = System.Reflection.Assembly.Load (ms.ToArray ());
+			// 6. Load the compiled assembly — write to temp file when debugging
+			// so the debugger can find the PDB (with embedded .tt source)
+			System.Reflection.Assembly assembly;
+			if (settings.Debug && pdbStream != null) {
+				var tmpDir = Path.Combine (Path.GetTempPath (), "Mono.TextTemplating");
+				Directory.CreateDirectory (tmpDir);
+				var tmpAsm = Path.Combine (tmpDir, settings.Name + ".dll");
+				var tmpPdb = Path.Combine (tmpDir, settings.Name + ".pdb");
+				File.WriteAllBytes (tmpAsm, ms.ToArray ());
+				File.WriteAllBytes (tmpPdb, pdbStream.ToArray ());
+				// LoadFrom keeps the file path so the debugger finds the adjacent .pdb
+				assembly = System.Reflection.Assembly.LoadFrom (tmpAsm);
+			} else {
+				ms.Seek (0, SeekOrigin.Begin);
+				assembly = System.Reflection.Assembly.Load (ms.ToArray ());
+			}
 
 			var compilerResults = new CompilerResults (new TempFileCollection ()) {
 				CompiledAssembly = assembly,

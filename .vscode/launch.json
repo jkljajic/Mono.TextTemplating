@@ -1,0 +1,35 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug HubClientGenerator.tt",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "build-all",
+      "program": "${workspaceFolder}/src/Mono.TextTemplating.Cli/bin/Debug/net10.0/TextTransform.dll",
+      "args": [
+        "-r",
+        "${workspaceFolder}/samples/SignalR.TsGeneration/bin/Debug/net10.0/SignalR.TsGeneration.dll",
+        "${workspaceFolder}/samples/SignalR.TsGeneration/Templates/HubClientGenerator.tt"
+      ],
+      "cwd": "${workspaceFolder}",
+      "justMyCode": false,
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "Debug Current .tt File",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "build-all",
+      "program": "${workspaceFolder}/src/Mono.TextTemplating.Cli/bin/Debug/net10.0/TextTransform.dll",
+      "args": [
+        "-r",
+        "${workspaceFolder}/samples/SignalR.TsGeneration/bin/Debug/net10.0/SignalR.TsGeneration.dll",
+        "${file}"
+      ],
+      "cwd": "${workspaceFolder}",
+      "justMyCode": false,
+      "console": "integratedTerminal"
+    }
+  ]
+}

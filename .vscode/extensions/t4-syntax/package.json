@@ -1,0 +1,36 @@
+{
+  "name": "t4-syntax",
+  "displayName": "T4 Template Syntax Highlighting",
+  "description": "TextMate grammar for .tt (T4) template files with directives, template blocks, and embedded C# highlighting",
+  "version": "1.1.0",
+  "publisher": "mono-texttemplating",
+  "engines": { "vscode": "^1.85.0" },
+  "categories": ["Programming Languages"],
+  "contributes": {
+    "configurationDefaults": {
+      "[t4]": {
+        "editor.defaultFormatter": null
+      },
+      "files.associations": {
+        "*.tt": "t4",
+        "*.t4": "t4"
+      }
+    },
+    "languages": [{
+      "id": "t4",
+      "aliases": ["T4 Template", "t4"],
+      "extensions": [".tt", ".t4"],
+      "configuration": "./language-configuration.json"
+    }],
+    "breakpoints": [
+      {
+        "language": "t4"
+      }
+    ],
+    "grammars": [{
+      "language": "t4",
+      "scopeName": "text.t4",
+      "path": "./syntaxes/t4.tmLanguage.json"
+    }]
+  }
+}

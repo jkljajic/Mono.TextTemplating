@@ -1,0 +1,178 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "T4 Template",
+  "scopeName": "text.t4",
+  "fileTypes": ["tt", "t4"],
+  "patterns": [
+    { "include": "#t4-comment" },
+    { "include": "#t4-directive" },
+    { "include": "#t4-expression" },
+    { "include": "#t4-class-feature" },
+    { "include": "#t4-control-block" }
+  ],
+  "repository": {
+    "t4-comment": {
+      "name": "comment.block.t4",
+      "begin": "<#--",
+      "end": "--#>",
+      "beginCaptures": {
+        "0": { "name": "punctuation.definition.comment.begin.t4" }
+      },
+      "endCaptures": {
+        "0": { "name": "punctuation.definition.comment.end.t4" }
+      }
+    },
+    "t4-directive": {
+      "name": "meta.directive.t4",
+      "begin": "(<#@)\\s*([A-Za-z_][A-Za-z0-9_.:-]*)",
+      "end": "(#>)",
+      "beginCaptures": {
+        "1": { "name": "punctuation.definition.directive.begin.t4" },
+        "2": { "name": "keyword.control.directive.$2.t4" }
+      },
+      "endCaptures": {
+        "1": { "name": "punctuation.definition.directive.end.t4" }
+      },
+      "patterns": [
+        { "include": "#directive-attributes" },
+        { "include": "#directive-known-values" },
+        { "include": "#strings" },
+        { "include": "#numbers" },
+        { "include": "#operators" }
+      ]
+    },
+    "directive-attributes": {
+      "patterns": [
+        {
+          "match": "\\b(language|compilerOptions|CompilerOptions|culture|debug|hostspecific|hostSpecific|inherits|visibility|linePragmas|name|namespace|extension|encoding|file|once|type|processor)\\b\\s*(=)",
+          "captures": {
+            "1": { "name": "entity.other.attribute-name.t4" },
+            "2": { "name": "keyword.operator.assignment.t4" }
+          }
+        },
+        {
+          "match": "\\b[A-Za-z_][A-Za-z0-9_.:-]*\\b\\s*(=)",
+          "captures": {
+            "0": { "name": "meta.attribute.t4" },
+            "1": { "name": "keyword.operator.assignment.t4" }
+          }
+        }
+      ]
+    },
+    "directive-known-values": {
+      "patterns": [
+        {
+          "match": "\\b(true|false)\\b",
+          "name": "constant.language.boolean.t4"
+        },
+        {
+          "match": "\\b(C#|CSharp|VB|VisualBasic|C#v3\\.5|C#v4\\.0)\\b",
+          "name": "constant.language.t4"
+        }
+      ]
+    },
+    "t4-expression": {
+      "name": "meta.embedded.expression.t4",
+      "begin": "(<#=)",
+      "end": "(#>)",
+      "beginCaptures": {
+        "1": {
+          "name": "punctuation.definition.expression.begin.t4 keyword.operator.expression.t4"
+        }
+      },
+      "endCaptures": {
+        "1": { "name": "punctuation.definition.expression.end.t4" }
+      },
+      "contentName": "source.cs.embedded.t4",
+      "patterns": [
+        { "include": "source.cs" }
+      ]
+    },
+    "t4-class-feature": {
+      "name": "meta.embedded.class-feature.t4",
+      "begin": "(<#\\+)",
+      "end": "(#>)",
+      "beginCaptures": {
+        "1": {
+          "name": "punctuation.definition.class-feature.begin.t4 keyword.control.class-feature.t4"
+        }
+      },
+      "endCaptures": {
+        "1": { "name": "punctuation.definition.class-feature.end.t4" }
+      },
+      "contentName": "source.cs.embedded.t4",
+      "patterns": [
+        { "include": "source.cs" }
+      ]
+    },
+    "t4-control-block": {
+      "name": "meta.embedded.control-block.t4",
+      "begin": "(<#)(?![@=+\\-])",
+      "end": "(#>)",
+      "beginCaptures": {
+        "1": { "name": "punctuation.definition.block.begin.t4" }
+      },
+      "endCaptures": {
+        "1": { "name": "punctuation.definition.block.end.t4" }
+      },
+      "contentName": "source.cs.embedded.t4",
+      "patterns": [
+        { "include": "source.cs" }
+      ]
+    },
+    "strings": {
+      "patterns": [
+        {
+          "name": "string.quoted.double.t4",
+          "begin": "\"",
+          "end": "\"",
+          "beginCaptures": {
+            "0": { "name": "punctuation.definition.string.begin.t4" }
+          },
+          "endCaptures": {
+            "0": { "name": "punctuation.definition.string.end.t4" }
+          },
+          "patterns": [
+            {
+              "match": "\\\\.",
+              "name": "constant.character.escape.t4"
+            }
+          ]
+        },
+        {
+          "name": "string.quoted.single.t4",
+          "begin": "'",
+          "end": "'",
+          "beginCaptures": {
+            "0": { "name": "punctuation.definition.string.begin.t4" }
+          },
+          "endCaptures": {
+            "0": { "name": "punctuation.definition.string.end.t4" }
+          },
+          "patterns": [
+            {
+              "match": "\\\\.",
+              "name": "constant.character.escape.t4"
+            }
+          ]
+        }
+      ]
+    },
+    "numbers": {
+      "patterns": [
+        {
+          "match": "\\b\\d+(?:\\.\\d+)?\\b",
+          "name": "constant.numeric.t4"
+        }
+      ]
+    },
+    "operators": {
+      "patterns": [
+        {
+          "match": "=",
+          "name": "keyword.operator.assignment.t4"
+        }
+      ]
+    }
+  }
+}

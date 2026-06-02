@@ -126,7 +126,13 @@ namespace Mono.TextTemplating
 				//FIXME: when is this called with false?
 				host.SetOutputEncoding (settings.Encoding, true);
 			}
-			
+
+			// Enable source-level debugging: embed .tt source in PDB
+			if (settings.Debug) {
+				settings.SourceText = content;
+				settings.SourceFilePath = host.TemplateFile;
+			}
+
 			var ccu = GenerateCompileUnit (host, content, pt, settings);
 			var references = ProcessReferences (host, pt, settings);
 			if (pt.Errors.HasErrors) {
@@ -439,7 +445,15 @@ namespace Mono.TextTemplating
 			transformMeth.Statements.Add (new CodeAssignStatement (
 				new CodePropertyReferenceExpression (new CodeThisReferenceExpression (), "GenerationEnvironment"),
 				new CodePrimitiveExpression (null)));
-			
+
+			// Inject Debugger.Break() when debugger attached — enables breakpoints on .tt
+			if (settings.Debug) {
+				transformMeth.Statements.Add (new CodeConditionStatement (
+					new CodeSnippetExpression ("System.Diagnostics.Debugger.IsAttached"),
+					new CodeExpressionStatement (
+						new CodeSnippetExpression ("System.Diagnostics.Debugger.Break()"))));
+			}
+
 			CodeExpression toStringHelper;
 			if (settings.IsPreprocessed) {
 				toStringHelper = new CodePropertyReferenceExpression (new CodeThisReferenceExpression (), "ToStringHelper");

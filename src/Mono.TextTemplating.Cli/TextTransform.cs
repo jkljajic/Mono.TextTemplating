@@ -50,7 +50,7 @@ namespace Mono.TextTemplating
 			string preprocess = null;
 			
 			optionSet = new OptionSet () {
-				{ "o=|out=", "The name of the output {file}", s => outputFile = s },
+				{ "o=|out=", "Output {file} (default: input.generated.ext)", s => outputFile = s },
 				{ "r=", "Assemblies to reference", s => generator.Refs.Add (s) },
 				{ "u=", "Namespaces to import <{0:namespace}>", s => generator.Imports.Add (s) },
 				{ "I=", "Paths to search for included files", s => generator.IncludePaths.Add (s) },
@@ -65,10 +65,10 @@ namespace Mono.TextTemplating
 			var remainingArgs = optionSet.Parse (args);
 			
 			if (string.IsNullOrEmpty (outputFile)) {
-				Console.Error.WriteLine ("No output file specified.");
-				return -1;
+				// Default: inputFile.generated.ext — read extension from template
+				outputFile = GetDefaultOutputPath (inputFile);
 			}
-			
+
 			if (remainingArgs.Count != 1) {
 				Console.Error.WriteLine ("No input file specified.");
 				return -1;
@@ -115,6 +115,11 @@ namespace Mono.TextTemplating
 				generator.AddDirectiveProcessor (split[0], split[1], split[2]);
 			}
 			
+			// Load all -r assemblies into AppDomain so template can discover types
+			foreach (var r in generator.Refs) {
+				try { System.Reflection.Assembly.LoadFrom (r); } catch { }
+			}
+
 			if (preprocess == null) {
 				Console.Write ("Processing '{0}'... ", inputFile);
 				generator.ProcessTemplate (inputFile, outputFile);
@@ -157,6 +162,28 @@ namespace Mono.TextTemplating
 			return generator.Errors.HasErrors? -1 : 0;
 		}
 		
+		static string GetDefaultOutputPath (string inputFile)
+		{
+			var ext = "cs"; // default
+			try {
+				// Read first 20 lines to find extension="..." in output directive
+				var firstLines = new System.Text.StringBuilder ();
+				using (var reader = new StreamReader (inputFile)) {
+					for (int i = 0; i < 20; i++) {
+						var line = reader.ReadLine ();
+						if (line == null) break;
+						firstLines.AppendLine (line);
+					}
+				}
+				var match = System.Text.RegularExpressions.Regex.Match (
+					firstLines.ToString (), @"<#@\s+output\s+.*?extension\s*=\s*""([^""]+)""",
+					System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+				if (match.Success)
+					ext = match.Groups[1].Value.TrimStart ('.');
+			} catch { }
+			return Path.ChangeExtension (inputFile, null) + ".generated." + ext;
+		}
+
 		static void ShowHelp (bool concise)
 		{
 			Console.WriteLine ("TextTransform command line T4 processor");

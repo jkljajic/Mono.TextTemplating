@@ -1,0 +1,66 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "T4 Template",
+  "scopeName": "text.t4",
+  "fileTypes": [".tt", ".t4"],
+  "patterns": [
+    {
+      "name": "meta.tag.template.t4",
+      "begin": "<#@\\s*(template|assembly|import|output|include|parameter)",
+      "end": "#>",
+      "beginCaptures": {
+        "0": { "name": "punctuation.definition.tag.t4" },
+        "1": { "name": "keyword.control.directive.t4" }
+      },
+      "endCaptures": {
+        "0": { "name": "punctuation.definition.tag.t4" }
+      },
+      "patterns": [
+        { "match": "\\b(language|culture|debug|hostspecific|inherits|name|namespace|extension|encoding|file|type|processor|CompilerOptions)\\b\\s*=", "captures": { "1": { "name": "entity.other.attribute-name.t4" } } },
+        { "match": "\"[^\"]*\"", "name": "string.quoted.double.t4" },
+        { "match": "'[^']*'", "name": "string.quoted.single.t4" },
+        { "match": "\\b(true|false|C#|VB|v3\\.5|v4\\.0|v5\\.0|v6\\.0|v7\\.0|v8\\.0|v9\\.0|v10\\.0|C#v3\\.5|C#v4\\.0)\\b", "name": "constant.language.t4" }
+      ]
+    },
+    {
+      "name": "meta.tag.expression.t4",
+      "match": "(<#=)(.*?)(#>)",
+      "captures": {
+        "1": { "name": "punctuation.definition.tag.t4" },
+        "2": { "name": "meta.embedded.csharp" },
+        "3": { "name": "punctuation.definition.tag.t4" }
+      }
+    },
+    {
+      "name": "meta.tag.classfeature.t4",
+      "begin": "<#\\+",
+      "end": "#>",
+      "beginCaptures": { "0": { "name": "punctuation.definition.tag.t4 keyword.control.t4" } },
+      "endCaptures": { "0": { "name": "punctuation.definition.tag.t4" } },
+      "contentName": "meta.embedded.csharp"
+    },
+    {
+      "name": "meta.tag.block.t4",
+      "begin": "<#(?![@=+])",
+      "end": "#>",
+      "beginCaptures": { "0": { "name": "punctuation.definition.tag.t4" } },
+      "endCaptures": { "0": { "name": "punctuation.definition.tag.t4" } },
+      "contentName": "meta.embedded.csharp"
+    },
+    {
+      "name": "comment.block.t4",
+      "begin": "<#--",
+      "end": "--#>",
+      "beginCaptures": { "0": { "name": "punctuation.definition.comment.t4" } },
+      "endCaptures": { "0": { "name": "punctuation.definition.comment.t4" } },
+      "contentName": "comment.t4"
+    },
+    {
+      "name": "comment.line.t4",
+      "match": "<#--.*?--#>",
+      "captures": {
+        "0": { "name": "comment.block.t4" }
+      }
+    }
+  ]
+}

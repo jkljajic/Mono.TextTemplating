@@ -3,47 +3,31 @@
 
   <!--
     Mono.TextTemplating.Build.targets
-    Post-build T4 pipeline: processes .tt files AFTER compilation,
-    so templates can reflect on the built assembly.
+    Post-build T4 pipeline — runs .tt files via the dotnet-t4 global tool.
+    Install with: dotnet tool install -g Mono.TextTemplating.Cli
   -->
-
-  <UsingTask
-    TaskName="Mono.TextTemplating.Build.TransformTemplates"
-    AssemblyFile="$(MSBuildThisFileDirectory)..\bin\$(Configuration)\net10.0\Mono.TextTemplating.Build.dll" />
 
   <Target Name="TransformT4Templates"
           AfterTargets="Build"
-          Condition="'@(T4PostBuildTemplate)' != ''"
-          Inputs="@(T4PostBuildTemplate)"
-          Outputs="@(T4PostBuildTemplate->'%(LastGenOutput)')">
+          Condition="'@(T4PostBuildTemplate)' != ''">
 
-    <Message Text="[T4] Transforming @(T4PostBuildTemplate->'%(Filename)','; ')" Importance="high" />
+    <Message Text="[T4] Transforming @(T4PostBuildTemplate->'%(Filename)','; ')"
+             Importance="high" />
 
-    <!-- Inject $(TargetPath) if the template item doesn't already have it -->
-    <ItemGroup>
-      <T4PostBuildTemplate>
-        <T4Param_TargetAssembly Condition="'%(T4PostBuildTemplate.T4Param_TargetAssembly)' == ''">$(TargetPath)</T4Param_TargetAssembly>
-      </T4PostBuildTemplate>
-    </ItemGroup>
-
-    <TransformTemplates
-      Templates="@(T4PostBuildTemplate)"
-      OutputDir="$(T4TemplateOutputDir)"
-      References="@(ReferencePathWithRefAssemblies);$(TargetPath)"
-      Preprocess="$(T4Preprocess)">
-
-      <Output TaskParameter="GeneratedFiles" ItemName="T4GeneratedOutput" />
-    </TransformTemplates>
+    <!-- Process each .tt individually via dotnet-t4 -->
+    <Exec
+      Command="dotnet t4 -o &quot;%(T4PostBuildTemplate.LastGenOutput)&quot; -a TargetAssembly!$(TargetPath) -r $(TargetPath) &quot;%(T4PostBuildTemplate.Identity)&quot;"
+      WorkingDirectory="$(MSBuildProjectDirectory)"
+      ContinueOnError="true"
+      Condition="'%(T4PostBuildTemplate.Identity)' != ''" />
 
     <ItemGroup>
-      <FileWrites Include="@(T4GeneratedOutput)" />
-      <Content Include="@(T4GeneratedOutput)" Pack="false" />
+      <FileWrites Include="@(T4PostBuildTemplate->'%(LastGenOutput)')" />
+      <Content Include="@(T4PostBuildTemplate->'%(LastGenOutput)')" Pack="false" />
     </ItemGroup>
   </Target>
 
-  <!-- Clean generated files -->
   <Target Name="CleanT4Templates" AfterTargets="CoreClean">
-    <RemoveDir Directories="$(T4TemplateOutputDir)$(T4GeneratedDir)" Condition="Exists('$(T4TemplateOutputDir)')" />
     <Delete Files="@(T4PostBuildTemplate->'%(LastGenOutput)')" />
   </Target>
 

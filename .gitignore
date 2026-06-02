@@ -36,6 +36,9 @@ lib/
 .dotnet/
 ## Build tasks (generated, not committed)
 tasks/
+
+## Local NuGet feed
+.local-nuget/
 ## Temporary files
 *.tmp
 *.~vs

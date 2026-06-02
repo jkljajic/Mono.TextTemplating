@@ -193,19 +193,30 @@ namespace Mono.TextTemplating
 		//FIXME: implement
 		protected virtual string ResolveAssemblyReference (string assemblyReference)
 		{
-			// Try to resolve by name in reference paths
+			// 1. Check if the reference matches a known assembly file (from -r flag)
+			var refFileName = Path.GetFileName (assemblyReference);
+			foreach (string r in refs) {
+				if (string.Equals (Path.GetFileName (r), refFileName, StringComparison.OrdinalIgnoreCase) ||
+				    string.Equals (r, assemblyReference, StringComparison.OrdinalIgnoreCase)) {
+					if (File.Exists (r))
+						return r;
+				}
+			}
+			// 2. Check reference paths (-P flag)
 			foreach (string referencePath in ReferencePaths) {
 				string testPath = Path.Combine (referencePath, assemblyReference);
 				if (File.Exists (testPath))
 					return testPath;
-				// Also try with .dll extension
 				if (!assemblyReference.EndsWith (".dll", StringComparison.OrdinalIgnoreCase)) {
 					testPath = Path.Combine (referencePath, assemblyReference + ".dll");
 					if (File.Exists (testPath))
 						return testPath;
 				}
 			}
-			// Return as-is; let the runtime resolve it from loaded assemblies or GAC
+			// 3. Check if it's a valid file path directly
+			if (File.Exists (assemblyReference))
+				return assemblyReference;
+			// 4. Return as-is for framework assemblies
 			return assemblyReference;
 		}
 		

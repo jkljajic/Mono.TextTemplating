@@ -8,13 +8,14 @@
     <IsPackable>false</IsPackable>
   </PropertyGroup>
 
+  <!-- T4 post-build: .tt → .ts next to the template, discovered by .props -->
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Mono.TextTemplating\Mono.TextTemplating.csproj" />
-    <ProjectReference Include="..\..\src\Mono.TextTemplating.Cli\Mono.TextTemplating.Cli.csproj" />
+    <T4PostBuildTemplate Update="Templates\**\*.tt">
+      <LastGenOutput>%(RootDir)%(Directory)%(Filename).ts</LastGenOutput>
+    </T4PostBuildTemplate>
   </ItemGroup>
 
-  <Target Name="GenerateTsClients" AfterTargets="Build">
-    <Exec Command="dotnet run --no-build --project $(MSBuildThisFileDirectory)..\..\src\Mono.TextTemplating.Cli\Mono.TextTemplating.Cli.csproj -c $(Configuration) -- -o $(MSBuildThisFileDirectory)Templates\HubClientGenerator.ts -a TargetAssembly!$(TargetPath) $(MSBuildThisFileDirectory)Templates\HubClientGenerator.tt" />
-  </Target>
+  <Import Project="..\..\src\Mono.TextTemplating.Build\build\Mono.TextTemplating.Build.props" />
+  <Import Project="..\..\src\Mono.TextTemplating.Build\build\Mono.TextTemplating.Build.targets" />
 
 </Project>

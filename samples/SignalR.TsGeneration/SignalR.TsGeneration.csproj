@@ -10,26 +10,11 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Mono.TextTemplating\Mono.TextTemplating.csproj" />
+    <ProjectReference Include="..\..\src\Mono.TextTemplating.Cli\Mono.TextTemplating.Cli.csproj" />
   </ItemGroup>
 
-  <!--
-    Post-build T4 pipeline: the .props discovers **/*.tt files.
-    The .targets runs them AFTER build with $(TargetPath) so
-    templates can reflect on the compiled assembly to discover hub types.
-    
-    Override the output extension to .ts (default is .generated.cs):
-  -->
-  <ItemGroup>
-    <T4PostBuildTemplate Remove="@(T4PostBuildTemplate)" />
-    <T4PostBuildTemplate Include="Templates\**\*.tt">
-      <LastGenOutput>$(OutDir)%(RecursiveDir)%(Filename).ts</LastGenOutput>
-    </T4PostBuildTemplate>
-  </ItemGroup>
-
-  <Import Project="..\..\src\Mono.TextTemplating.Build\build\Mono.TextTemplating.Build.props"
-          Condition="Exists('..\..\src\Mono.TextTemplating.Build\build\Mono.TextTemplating.Build.props')" />
-
-  <Import Project="..\..\src\Mono.TextTemplating.Build\build\Mono.TextTemplating.Build.targets"
-          Condition="Exists('..\..\src\Mono.TextTemplating.Build\build\Mono.TextTemplating.Build.targets')" />
+  <Target Name="GenerateTsClients" AfterTargets="Build">
+    <Exec Command="dotnet run --no-build --project $(MSBuildThisFileDirectory)..\..\src\Mono.TextTemplating.Cli\Mono.TextTemplating.Cli.csproj -c $(Configuration) -- -o $(MSBuildThisFileDirectory)Templates\HubClientGenerator.ts -a TargetAssembly!$(TargetPath) $(MSBuildThisFileDirectory)Templates\HubClientGenerator.tt" />
+  </Target>
 
 </Project>

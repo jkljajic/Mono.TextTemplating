@@ -116,8 +116,14 @@ namespace Mono.TextTemplating.Build
 			string outputFile;
 			if (!string.IsNullOrEmpty (OutputDir)) {
 				var relativeDir = templateItem.GetMetadata ("RecursiveDir");
-				var fileName = Path.GetFileNameWithoutExtension (templatePath);
-				outputFile = Path.Combine (OutputDir, relativeDir, fileName + (Preprocess ? ".cs" : ".generated.cs"));
+				var lastGenOutput = templateItem.GetMetadata ("LastGenOutput");
+				if (!string.IsNullOrEmpty (lastGenOutput)) {
+					var genFileName = Path.GetFileName (lastGenOutput);
+					outputFile = Path.Combine (OutputDir, relativeDir, genFileName);
+				} else {
+					var fileName = Path.GetFileNameWithoutExtension (templatePath);
+					outputFile = Path.Combine (OutputDir, relativeDir, fileName + (Preprocess ? ".cs" : ".generated.cs"));
+				}
 			} else {
 				outputFile = templateItem.GetMetadata ("LastGenOutput");
 				if (string.IsNullOrEmpty (outputFile)) {

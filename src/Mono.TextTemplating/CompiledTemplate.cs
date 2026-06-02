@@ -35,10 +35,10 @@ namespace Mono.TextTemplating
 	public sealed class CompiledTemplate : MarshalByRefObject, IDisposable
 	{
 		ITextTemplatingEngineHost host;
-		TextTransformation tt;
+		dynamic tt;
 		CultureInfo culture;
 		string[] assemblyFiles;
-		
+
 		public CompiledTemplate (ITextTemplatingEngineHost host, CompilerResults results, string fullName, CultureInfo culture,
 			string[] assemblyFiles)
 		{
@@ -48,18 +48,18 @@ namespace Mono.TextTemplating
 			this.assemblyFiles = assemblyFiles;
 			Load (results, fullName);
 		}
-		
+
 		void Load (CompilerResults results, string fullName)
 		{
 			var assembly = results.CompiledAssembly;
 			Type transformType = assembly.GetType (fullName);
-			tt = (TextTransformation) Activator.CreateInstance (transformType);
-			
+			tt = Activator.CreateInstance (transformType);
+
 			//set the host property if it exists
 			var hostProp = transformType.GetProperty ("Host", typeof (ITextTemplatingEngineHost));
 			if (hostProp != null && hostProp.CanWrite)
 				hostProp.SetValue (tt, host, null);
-			
+
 			var sessionHost = host as ITextTemplatingSessionHost;
 			if (sessionHost != null) {
 				//FIXME: should we create a session if it's null?

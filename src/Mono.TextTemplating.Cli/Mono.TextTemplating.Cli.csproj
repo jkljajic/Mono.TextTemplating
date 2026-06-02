@@ -10,13 +10,12 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
 
     <Title>TextTransform</Title>
-    <Description>T4 text transformation CLI tool — processed .tt template files from the command line</Description>
+    <Description>T4 text transformation CLI tool</Description>
     <Company>The Mono Project</Company>
     <Product>Mono.TextTemplating</Product>
     <Copyright>MIT</Copyright>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
 
-    <!-- Pack as a dotnet global tool -->
     <PackAsTool>true</PackAsTool>
     <ToolCommandName>dotnet-t4</ToolCommandName>
     <PackageId>Mono.TextTemplating.Cli</PackageId>
@@ -24,8 +23,12 @@
     <VersionSuffix>preview.1</VersionSuffix>
     <IsPackable>true</IsPackable>
 
-    <AssemblyTitle>TextTransform — T4 CLI Tool</AssemblyTitle>
+    <AssemblyTitle>TextTransform</AssemblyTitle>
   </PropertyGroup>
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Mono.TextTemplating\Mono.TextTemplating.csproj" />

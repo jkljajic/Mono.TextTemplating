@@ -183,7 +183,7 @@ namespace Mono.TextTemplating
 			}
 			
 			//try to resolve path relative to the file that included it
-			if (!Path.IsPathRooted (fileName)) {
+			if (!Path.IsPathRooted (fileName) && relativeToDirectory != null) {
 				string possible = Path.Combine (relativeToDirectory, fileName);
 				if (File.Exists (possible))
 					fileName = possible;

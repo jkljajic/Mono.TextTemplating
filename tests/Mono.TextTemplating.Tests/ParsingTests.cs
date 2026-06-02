@@ -46,11 +46,16 @@ baz \#>
 #>
 ";
 		
+		static string NormalizeNewlines (string s)
+		{
+			return s.Replace ("\r\n", "\n").Replace ("\r", "\n");
+		}
+
 		[Fact]
 		public void TokenTest ()
 		{
 			string tf = "test.input";
-			Tokeniser tk = new Tokeniser (tf, ParseSample1);
+			Tokeniser tk = new Tokeniser (tf, NormalizeNewlines (ParseSample1));
 			
 			//line 1
 			Assert.True (tk.Advance ());
@@ -136,7 +141,7 @@ baz \#>
 			string tf = "test.input";
 			
 			ParsedTemplate pt = new ParsedTemplate ("test.input");
-			Tokeniser tk = new Tokeniser (tf, ParseSample1);
+			Tokeniser tk = new Tokeniser (tf, NormalizeNewlines (ParseSample1));
 			DummyHost host = new DummyHost ();
 			pt.Parse (host, tk);
 			

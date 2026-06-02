@@ -42,7 +42,7 @@ namespace Mono.TextTemplating.Tests
 				"<#@ template language=\"C#\" #>\r\n" +
 				"Test\r\n";
 			
-			string expectedOutput = OutputSample1;
+			string expectedOutput = NormalizeNewlines (OutputSample1);
 			string output = RunPreprocess (input);
 			
 			Assert.Equal (expectedOutput.TrimStart ('\r', '\n'), output);
@@ -61,6 +61,11 @@ namespace Mono.TextTemplating.Tests
 			Assert.Equal (
 				NormalizeWhitespace (expectedOutput.TrimStart ('\r', '\n')),
 				NormalizeWhitespace (output));
+		}
+
+		static string NormalizeNewlines (string s)
+		{
+			return s.Replace ("\r\n", "\n").Replace ("\r", "\n");
 		}
 
 		static string NormalizeWhitespace (string s)

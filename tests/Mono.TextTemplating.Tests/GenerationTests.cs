@@ -39,25 +39,25 @@ namespace Mono.TextTemplating.Tests
 		[Fact]
 		public void Generate ()
 		{
-			string Input = ParsingTests.ParseSample1;
-			string Output = OutputSample1;
+			string Input = NormalizeNewlines (ParsingTests.ParseSample1);
+			string Output = NormalizeNewlines (OutputSample1);
 			GenerateAndVerify (Input, Output, "\n");
 		}
 		
 		[Fact]
 		public void GenerateMacNewlines ()
 		{
-			string MacInput = ParsingTests.ParseSample1.Replace ("\n", "\r");
-			string MacOutput = OutputSample1.Replace ("\\n", "\\r").Replace ("\n", "\r");;
-			GenerateAndVerify (MacInput, MacOutput, "\r");
+			string Input = NormalizeNewlines (ParsingTests.ParseSample1);
+			string Output = NormalizeNewlines (OutputSample1);
+			GenerateAndVerify (Input.Replace("\n", "\r"), Output.Replace("\\n", "\\r").Replace("\n", "\r"), "\r");
 		}
 		
 		[Fact]
 		public void GenerateWindowsNewlines ()
 		{
-			string WinInput = ParsingTests.ParseSample1.Replace ("\n", "\r\n");
-			string WinOutput = OutputSample1.Replace ("\\n", "\\r\\n").Replace ("\n", "\r\n");
-			GenerateAndVerify (WinInput, WinOutput, "\r\n");
+			string Input = NormalizeNewlines (ParsingTests.ParseSample1);
+			string Output = NormalizeNewlines (OutputSample1);
+			GenerateAndVerify (Input.Replace("\n", "\r\n"), Output.Replace("\\n", "\\r\\n").Replace("\n", "\r\n"), "\r\n");
 		}
 		
 		//NOTE: we set the newline property on the code generator so that the whole files has matching newlines,
@@ -107,6 +107,11 @@ namespace Mono.TextTemplating.Tests
 				}
 			}
 			return result.ToString ();
+		}
+		
+		static string NormalizeNewlines (string s)
+		{
+			return s.Replace ("\r\n", "\n").Replace ("\r", "\n");
 		}
 		
 		#region Helpers

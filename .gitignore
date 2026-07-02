@@ -4,6 +4,7 @@ obj/
 artifacts/
 *.nupkg
 *.snupkg
+*.vsix
 
 ## IDE
 .vs/

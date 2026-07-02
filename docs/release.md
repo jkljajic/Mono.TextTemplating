@@ -56,3 +56,31 @@ Environment: production
 ```
 
 The publish job requests GitHub's OIDC token with `id-token: write`, runs only for `v*.*.*` tags, and pushes only `.nupkg` files to `https://api.nuget.org/v3/index.json` with `--skip-duplicate`.
+
+## VS Code Marketplace
+
+The VS Code extension lives in `.vscode/extensions/t4-syntax`.
+
+Package it locally:
+
+```bash
+cd .vscode/extensions/t4-syntax
+vsce package
+```
+
+Publish through GitHub Actions by pushing a VS Code extension tag:
+
+```bash
+git tag vscode-v0.1.0
+git push origin vscode-v0.1.0
+```
+
+The `.github/workflows/vscode-marketplace.yml` workflow packages the extension on pushes and pull requests. It publishes only for `vscode-v*.*.*` tags.
+
+Publishing to the Visual Studio Marketplace from GitHub Actions requires this repository secret:
+
+```text
+VSCE_PAT
+```
+
+The token must be an Azure DevOps/Visual Studio Marketplace token that can manage the `t4studio` publisher. Microsoft recommends moving away from long-lived PATs; for now, NuGet trusted publishing and VS Code Marketplace publishing use different authentication systems.

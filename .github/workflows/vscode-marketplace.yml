@@ -1,0 +1,64 @@
+name: VS Code Marketplace
+
+on:
+  push:
+    branches: [main, master]
+    tags:
+      - 'vscode-v*.*.*'
+  pull_request:
+    branches: [main, master]
+
+permissions:
+  contents: read
+
+env:
+  EXTENSION_DIR: .vscode/extensions/t4-syntax
+
+jobs:
+  package:
+    name: Package VS Code extension
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install vsce
+        run: npm install -g @vscode/vsce
+
+      - name: Package
+        working-directory: ${{ env.EXTENSION_DIR }}
+        run: vsce package
+
+      - name: Upload VSIX artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: vscode-extension
+          path: ${{ env.EXTENSION_DIR }}/*.vsix
+
+  publish:
+    name: Publish VS Code extension
+    needs: package
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/vscode-v')
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install vsce
+        run: npm install -g @vscode/vsce
+
+      - name: Publish
+        working-directory: ${{ env.EXTENSION_DIR }}
+        run: vsce publish --pat "${{ secrets.VSCE_PAT }}"

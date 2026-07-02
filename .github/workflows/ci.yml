@@ -72,4 +72,13 @@ jobs:
           path: ./artifacts/packages
 
       - name: Publish packages
-        run: dotnet nuget push "./artifacts/packages/*.nupkg" --source "https://api.nuget.org/v3/index.json" --skip-duplicate
+        shell: pwsh
+        run: |
+          Get-ChildItem ./artifacts/packages -Recurse
+          $packages = @(Get-ChildItem ./artifacts/packages -Recurse -Filter *.nupkg)
+          if ($packages.Count -eq 0) {
+            throw "No .nupkg files found in ./artifacts/packages"
+          }
+          foreach ($package in $packages) {
+            dotnet nuget push $package.FullName --source "https://api.nuget.org/v3/index.json" --skip-duplicate
+          }

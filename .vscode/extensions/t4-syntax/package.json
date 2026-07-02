@@ -4,6 +4,12 @@
   "description": "T4 Studio syntax highlighting for .tt and .t4 template files with directives, template blocks, and embedded C# highlighting",
   "version": "0.1.0",
   "publisher": "t4studio",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jkljajic/T4Studio.git",
+    "directory": ".vscode/extensions/t4-syntax"
+  },
   "engines": { "vscode": "^1.85.0" },
   "categories": ["Programming Languages"],
   "contributes": {

@@ -57,6 +57,36 @@ Environment: production
 
 The publish job requests GitHub's OIDC token with `id-token: write`, runs only for `v*.*.*` tags, and pushes only `.nupkg` files to `https://api.nuget.org/v3/index.json` with `--skip-duplicate`.
 
+## GitHub Packages
+
+The same `ci.yml` tag run also publishes the `.nupkg` files to GitHub Packages:
+
+```text
+https://nuget.pkg.github.com/jkljajic/index.json
+```
+
+This uses the built-in `GITHUB_TOKEN`, not a personal access token. The publish job has:
+
+```yaml
+permissions:
+  contents: write
+  packages: write
+  id-token: write
+```
+
+Consumers can add the GitHub Packages source when they want packages from GitHub instead of nuget.org:
+
+```bash
+dotnet nuget add source \
+  --username USERNAME \
+  --password TOKEN \
+  --store-password-in-clear-text \
+  --name github \
+  "https://nuget.pkg.github.com/jkljajic/index.json"
+```
+
+Use a classic PAT for local restore/install from GitHub Packages. Inside GitHub Actions, use `GITHUB_TOKEN` when the package is associated with the same repository or the repository has been granted package access.
+
 ## VS Code Marketplace
 
 The VS Code extension lives in `.vscode/extensions/t4-syntax`.

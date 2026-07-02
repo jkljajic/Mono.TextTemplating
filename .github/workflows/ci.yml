@@ -98,16 +98,14 @@ jobs:
       - name: Publish to GitHub Packages
         shell: pwsh
         run: |
-          dotnet nuget add source `
-            "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json" `
-            --name "github" `
-            --username "${{ github.repository_owner }}" `
-            --password "${{ secrets.GITHUB_TOKEN }}" `
-            --store-password-in-clear-text
           $packages = @(Get-ChildItem ./artifacts/packages -Recurse -Filter *.nupkg)
+          if ($packages.Count -eq 0) {
+            throw "No .nupkg files found in ./artifacts/packages"
+          }
           foreach ($package in $packages) {
             dotnet nuget push $package.FullName `
-              --source "github" `
+              --source "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json" `
+              --api-key "${{ secrets.GITHUB_TOKEN }}" `
               --skip-duplicate
           }
 

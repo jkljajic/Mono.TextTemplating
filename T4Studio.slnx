@@ -1,0 +1,18 @@
+<Solution>
+  <Configurations>
+    <Platform Name="Any CPU" />
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Folder Name="/samples/">
+    <Project Path="samples/SignalR.TsGeneration/SignalR.TsGeneration.csproj" />
+  </Folder>
+  <Folder Name="/src/">
+    <Project Path="src/T4Studio.Vsix/T4Studio.Vsix.csproj" />
+  </Folder>
+  <Folder Name="/Templates/" />
+  <Project Path="src/T4Studio.Build/T4Studio.Build.csproj" />
+  <Project Path="src/T4Studio.Cli/T4Studio.Cli.csproj" />
+  <Project Path="src/T4Studio.Engine/T4Studio.Engine.csproj" />
+  <Project Path="tests/T4Studio.Tests/T4Studio.Tests.csproj" />
+</Solution>

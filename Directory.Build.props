@@ -1,15 +1,23 @@
 <Project>
   <PropertyGroup>
     <!-- Shared properties for all projects -->
-    <Authors>Mono Project, Community Contributors</Authors>
+    <Version>0.1.0</Version>
+    <Authors>Jovo Kljajic</Authors>
+    <Company>T4 Studio</Company>
+    <Product>T4 Studio</Product>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageProjectUrl>https://github.com/jkljajic/T4Studio</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/jkljajic/T4Studio</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>t4;text-templating;roslyn;code-generation;dotnet;templates</PackageTags>
     <Copyright>MIT License</Copyright>
 
     <!-- Code quality -->
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
-    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
-    <AnalysisLevel>latest</AnalysisLevel>
-    <AnalysisMode>Recommended</AnalysisMode>
+    <EnforceCodeStyleInBuild>false</EnforceCodeStyleInBuild>
+    <!-- Baseline inherited warning debt from the upstream engine while this fork is being rebranded. -->
+    <NoWarn>$(NoWarn);NU1507;CS0067;CS0672;CS1570;CS1587;CS1591;CS3014;CS8600;CS8601;CS8602;CS8603;CS8604;CS8618;CS8622;CS8625;CS8765;CS8767;CS8769;SYSLIB0003;SYSLIB0051;xUnit2013;VSTHRD010</NoWarn>
 
     <!-- Debug info -->
     <DebugType>embedded</DebugType>

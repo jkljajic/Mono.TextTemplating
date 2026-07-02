@@ -1,0 +1,38 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net10.0;net472</TargetFrameworks>
+    <LangVersion>latest</LangVersion>
+    <RootNamespace>T4Studio</RootNamespace>
+    <AssemblyName>T4Studio.Engine</AssemblyName>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+
+    <!-- Assembly attributes (from old AssemblyInfo.cs) -->
+    <PackageId>T4Studio.Engine</PackageId>
+    <Title>T4 Studio Engine</Title>
+    <Description>T4 Studio engine library for processing and preprocessing Visual Studio-compatible .tt text templates with the existing T4Studio API surface.</Description>
+    <Copyright>MIT</Copyright>
+    <PackageTags>t4;text-templating;roslyn;code-generation;dotnet;templates;engine</PackageTags>
+
+    <!-- NuGet packaging -->
+    <IsPackable>true</IsPackable>
+    <PackageOutputPath>$(MSBuildThisFileDirectory)..\..\artifacts</PackageOutputPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.CodeDom" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'net472'">
+    <Reference Include="Microsoft.CSharp" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
+</Project>
+

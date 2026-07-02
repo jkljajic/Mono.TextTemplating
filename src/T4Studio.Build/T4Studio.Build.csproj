@@ -1,0 +1,56 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>T4Studio.Build</RootNamespace>
+    <AssemblyName>T4Studio.Build</AssemblyName>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+
+    <PackageId>T4Studio.Build</PackageId>
+    <Title>T4 Studio Build</Title>
+    <Description>MSBuild integration for T4 Studio that transforms .tt files during dotnet build.</Description>
+    <Copyright>MIT</Copyright>
+    <PackageTags>t4;text-templating;roslyn;code-generation;dotnet;templates;msbuild;build</PackageTags>
+
+    <IsPackable>true</IsPackable>
+    <PackageOutputPath>$(MSBuildThisFileDirectory)..\..\artifacts</PackageOutputPath>
+
+    <!-- Bundle dependencies for MSBuild task loading -->
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    <IncludeBuildOutput>false</IncludeBuildOutput>
+    <DevelopmentDependency>true</DevelopmentDependency>
+    <NoPackageAnalysis>true</NoPackageAnalysis>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Build.Utilities.Core" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\T4Studio.Engine\T4Studio.Engine.csproj" />
+  </ItemGroup>
+
+  <!-- Package build assets (.props, .targets, readme) -->
+  <ItemGroup>
+    <None Include="build\T4Studio.Build.props" Pack="true" PackagePath="build\T4Studio.Build.props" />
+    <None Include="build\T4Studio.Build.targets" Pack="true" PackagePath="build\T4Studio.Build.targets" />
+    <None Include="..\..\README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
+  <!-- Copy all DLLs and deps.json from output to tasks/ folder inside the NuGet package -->
+  <Target Name="IncludeTaskDependencies" BeforeTargets="_GetPackageFiles">
+    <ItemGroup>
+      <_TaskOutputFiles Include="$(OutputPath)*.dll" />
+      <_TaskOutputFiles Include="$(OutputPath)*.deps.json" />
+    </ItemGroup>
+    <ItemGroup>
+      <_PackageFiles Include="@(_TaskOutputFiles)">
+        <PackagePath>tasks\net10.0\%(Filename)%(Extension)</PackagePath>
+      </_PackageFiles>
+    </ItemGroup>
+  </Target>
+
+</Project>
+

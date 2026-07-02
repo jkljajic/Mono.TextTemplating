@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <!--
+    T4Studio.Build.targets
+    Post-build T4 pipeline - runs .tt files via a configurable t4studio command.
+    Install with: dotnet tool install -g T4Studio.Cli
+  -->
+
+  <PropertyGroup>
+    <T4StudioCommand Condition="'$(T4StudioCommand)' == ''">t4studio</T4StudioCommand>
+  </PropertyGroup>
+
+  <Target Name="TransformT4Templates"
+          AfterTargets="Build"
+          Condition="'@(T4PostBuildTemplate)' != ''">
+
+    <Message Text="[T4] Transforming @(T4PostBuildTemplate->'%(Filename)','; ')"
+             Importance="high" />
+
+    <!-- Process each .tt individually via the configured T4 Studio command. -->
+    <Exec
+      Command="$(T4StudioCommand) -o &quot;%(T4PostBuildTemplate.LastGenOutput)&quot; -r &quot;$(TargetPath)&quot; &quot;%(T4PostBuildTemplate.Identity)&quot;"
+      WorkingDirectory="$(MSBuildProjectDirectory)"
+      ContinueOnError="true"
+      Condition="'%(T4PostBuildTemplate.Identity)' != ''" />
+
+    <ItemGroup>
+      <FileWrites Include="@(T4PostBuildTemplate->'%(LastGenOutput)')" />
+      <Content Include="@(T4PostBuildTemplate->'%(LastGenOutput)')" Pack="false" />
+    </ItemGroup>
+  </Target>
+
+  <Target Name="CleanT4Templates" AfterTargets="CoreClean">
+    <Delete Files="@(T4PostBuildTemplate->'%(LastGenOutput)')" />
+  </Target>
+
+</Project>

@@ -1,4 +1,6 @@
-# Mono.TextTemplating — SDLC Modernization & Revival Plan
+# T4 Studio SDLC Modernization & Revival Plan
+
+Current package identity is `T4Studio.Engine`, `T4Studio.Cli`, and `T4Studio.Build`. This document is a historical modernization plan and still refers to `T4Studio` where it discusses upstream architecture, assemblies, namespaces, or compatibility.
 
 **Status:** Deep Analysis Complete | **Date:** 2026-05-31 | **Author:** Jovo (Architect)
 
@@ -6,7 +8,7 @@
 
 ## Executive Summary
 
-Mono.TextTemplating is a clean, well-architected T4 template engine last touched in July 2012. The core pipeline (Tokeniser → ParsedTemplate → CodeDOM → Compile → Execute) is **functionally correct and builds on .NET 10**. However, it is trapped in .NET Framework era patterns: non-SDK projects, NUnit 2.x, CodeDOM dependency, AppDomain usage, and zero DevOps infrastructure.
+T4Studio is a clean, well-architected T4 template engine last touched in July 2012. The core pipeline (Tokeniser → ParsedTemplate → CodeDOM → Compile → Execute) is **functionally correct and builds on .NET 10**. However, it is trapped in .NET Framework era patterns: non-SDK projects, NUnit 2.x, CodeDOM dependency, AppDomain usage, and zero DevOps infrastructure.
 
 **Verdict:** The engine's core logic is worth saving. The revival needs surgical modernization in layers — infrastructure first, then API surface, then compiler backend. The CodeDOM → Roslyn migration is the hardest problem.
 
@@ -43,9 +45,9 @@ DirectiveProcessor             — extensibility point
 
 | Project | Build | Issues |
 |---|---|---|
-| `Mono.TextTemplating.dll` | ✅ PASS | None |
-| `TextTransform.exe` | ✅ PASS | None |
-| `Mono.TextTemplating.Tests.dll` | ❌ FAIL | NUnit 2.x not found |
+| `T4Studio.dll` | ✅ PASS | None |
+| `t4studio` | ✅ PASS | None |
+| `T4Studio.Tests.dll` | ❌ FAIL | NUnit 2.x not found |
 
 ### 1.4 Critical Technical Debt
 
@@ -82,7 +84,7 @@ T4 has **no viable open-source alternative** for the `.tt` format. Razor replace
 |---|---|
 | Microsoft's T4 engine (`Microsoft.VisualStudio.TextTemplating.dll`) | Closed-source, ships with VS Build Tools |
 | `dotnet-t4` (unofficial) | Several exist but are incomplete |
-| Mono.TextTemplating (this project) | Most complete open-source implementation |
+| T4Studio (this project) | Most complete open-source implementation |
 | `T4.Build` NuGet package | Wraps MSBuild integration |
 
 ### 2.3 The opportunity
@@ -106,7 +108,7 @@ The .NET ecosystem lacks a **first-class, cross-platform, NuGet-delivered T4 eng
 
 #### 0.1 — Convert to SDK-style projects
 ```xml
-<!-- Mono.TextTemplating.csproj -->
+<!-- T4Studio.csproj -->
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFrameworks>net8.0;net9.0;net10.0</TargetFrameworks>
@@ -154,10 +156,10 @@ jobs:
 #### 0.4 — Add NuGet packaging metadata
 ```xml
 <PropertyGroup>
-  <PackageId>Mono.TextTemplating</PackageId>
-  <Version>3.0.0-preview.1</Version>
-  <Authors>Mono Project,Community</Authors>
-  <Description>Cross-platform T4 text template engine for .NET</Description>
+  <PackageId>T4Studio.Engine</PackageId>
+  <Version>0.1.0</Version>
+  <Authors>Jovo Kljajic</Authors>
+  <Description>T4 Studio engine library for Visual Studio-compatible T4 templates</Description>
   <PackageLicenseExpression>MIT</PackageLicenseExpression>
   <PackageReadmeFile>README.md</PackageReadmeFile>
 </PropertyGroup>
@@ -318,10 +320,10 @@ This gives us **collectible AssemblyLoadContext** — the modern equivalent of R
 #### 3.1 — MSBuild task
 
 ```xml
-<!-- Mono.TextTemplating.Build NuGet package -->
+<!-- T4Studio.Build NuGet package -->
 <Project>
   <UsingTask TaskName="TransformTemplates"
-             AssemblyFile="$(MSBuildThisFileDirectory)../tasks/Mono.TextTemplating.Build.dll" />
+             AssemblyFile="$(MSBuildThisFileDirectory)../tasks/T4Studio.Build.dll" />
 
   <ItemGroup>
     <T4Template Include="**/*.tt" />
@@ -344,17 +346,17 @@ This gives us **collectible AssemblyLoadContext** — the modern equivalent of R
 
 | Package | Contents |
 |---|---|
-| `Mono.TextTemplating` | Core engine library |
-| `Mono.TextTemplating.Build` | MSBuild targets + task DLL |
-| `Mono.TextTemplating.Cli` | `dotnet-t4` global tool |
-| `Mono.TextTemplating.Roslyn` | Roslyn compiler backend |
-| `Mono.TextTemplating.CodeAnalysis` | Roslyn Analyzer + Source Generator |
+| `T4Studio.Engine` | Core engine library |
+| `T4Studio.Build` | MSBuild targets + task DLL |
+| `T4Studio.Cli` | `t4studio` global tool |
+| `T4Studio.Roslyn` | Future split if Roslyn is separated from the engine |
+| `T4Studio.CodeAnalysis` | Roslyn Analyzer + Source Generator |
 
-#### 3.3 — `dotnet-t4` global tool
+#### 3.3 — `t4studio` global tool
 
 ```bash
-dotnet tool install -g Mono.TextTemplating.Cli
-dotnet t4 transform -i template.tt -o output.cs
+dotnet tool install -g T4Studio.Cli
+t4studio -o output.cs template.tt
 dotnet t4 preprocess -i template.tt -c MyTemplate -ns MyApp.Generated
 ```
 
@@ -392,7 +394,7 @@ dotnet t4 preprocess -i template.tt -c MyTemplate -ns MyApp.Generated
 │         └─────────┬───────┴───────────────────┘                  │
 │                   │                                              │
 │  ┌────────────────┴────────────────────────────┐                │
-│  │          Mono.TextTemplating Engine          │                │
+│  │          T4Studio Engine          │                │
 │  │                                              │                │
 │  │  ┌──────────┐  ┌───────────┐  ┌───────────┐ │                │
 │  │  │ Tokeniser│→│  Parser   │→│ Compiler   │ │                │
@@ -459,7 +461,7 @@ dotnet t4 preprocess -i template.tt -c MyTemplate -ns MyApp.Generated
 8. **Extract `ITemplateCompiler` interface**
 9. **Implement `RoslynTemplateCompiler`** (Option A: CodeDOM → C# text → Roslyn)
 10. **Replace `RecyclableAppDomain` with `AssemblyLoadContext`**
-11. **Add `dotnet-t4` CLI tool package**
+11. **Add `t4studio` CLI tool package**
 
 ### 🔵 Weeks 5+ — Ecosystem
 12. MSBuild `.targets` for build-time `.tt` processing
@@ -472,7 +474,7 @@ dotnet t4 preprocess -i template.tt -c MyTemplate -ns MyApp.Generated
 ## 8. Repository Structure — Target State
 
 ```
-Mono.TextTemplating/
+T4Studio/
 ├── .github/
 │   └── workflows/
 │       ├── ci.yml
@@ -480,11 +482,11 @@ Mono.TextTemplating/
 ├── .editorconfig
 ├── .gitignore
 ├── Directory.Build.props
-├── Mono.TextTemplating.sln
+├── T4Studio.sln
 ├── README.md
 ├── src/
-│   ├── Mono.TextTemplating/
-│   │   ├── Mono.TextTemplating.csproj    (SDK-style, multi-target)
+│   ├── T4Studio/
+│   │   ├── T4Studio.csproj    (SDK-style, multi-target)
 │   │   ├── Tokeniser.cs
 │   │   ├── ParsedTemplate.cs
 │   │   ├── TemplatingEngine.cs
@@ -500,18 +502,18 @@ Mono.TextTemplating/
 │   │       ├── TextTransformation.cs
 │   │       ├── Engine.cs
 │   │       └── ...
-│   ├── Mono.TextTemplating.Cli/
-│   │   ├── Mono.TextTemplating.Cli.csproj
+│   ├── T4Studio.Cli/
+│   │   ├── T4Studio.Cli.csproj
 │   │   └── Program.cs (System.CommandLine)
-│   └── Mono.TextTemplating.Build/
-│       ├── Mono.TextTemplating.Build.csproj
+│   └── T4Studio.Build/
+│       ├── T4Studio.Build.csproj
 │       ├── TransformTemplates.cs (MSBuild task)
 │       └── build/
-│           ├── Mono.TextTemplating.Build.props
-│           └── Mono.TextTemplating.Build.targets
+│           ├── T4Studio.Build.props
+│           └── T4Studio.Build.targets
 ├── tests/
-│   └── Mono.TextTemplating.Tests/
-│       ├── Mono.TextTemplating.Tests.csproj
+│   └── T4Studio.Tests/
+│       ├── T4Studio.Tests.csproj
 │       ├── TokeniserTests.cs
 │       ├── ParsingTests.cs
 │       ├── GenerationTests.cs
@@ -572,7 +574,7 @@ Mono.TextTemplating/
 
 ## Appendix A: Compatibility Matrix
 
-| Feature | Microsoft T4 | Mono.TextTemplating (current) | Target |
+| Feature | Microsoft T4 | T4Studio (current) | Target |
 |---|---|---|---|
 | `<#= expr #>` expressions | ✅ | ✅ | ✅ |
 | `<# code #>` statement blocks | ✅ | ✅ | ✅ |
@@ -591,7 +593,7 @@ Mono.TextTemplating/
 | `dotnet build` on Linux | ❌ (Windows only) | ❌ | ✅ (Phase 3) |
 | Roslyn compilation | ❌ (CodeDOM) | ❌ | ✅ (Phase 2) |
 | Source generators | ❌ | ❌ | ✅ (Phase 4) |
-| `dotnet-t4` CLI tool | ❌ | Partially (`TextTransform.exe`) | ✅ (Phase 3) |
+| `t4studio` CLI tool | Not applicable | Partially (`t4studio`) | Planned in Phase 3 |
 | In-editor `.tt` support (VS Code/Rider) | ✅ (VS only) | ❌ | ✅ (Phase 4) |
 
 ---
@@ -600,7 +602,7 @@ Mono.TextTemplating/
 
 ```bash
 # Current state (2026-05-31)
-dotnet build Mono.TextTemplating.sln -c Release
+dotnet build T4Studio.sln -c Release
 # Result: Core library + CLI build PASS. Tests FAIL (NUnit 2.x missing).
 # .NET SDK: 10.0.300
 # Output: E:\build\AddIns\MonoDevelop.TextTemplating\
@@ -609,3 +611,5 @@ dotnet build Mono.TextTemplating.sln -c Release
 ---
 
 *This document is a living artifact. Update it as phases complete.*
+
+

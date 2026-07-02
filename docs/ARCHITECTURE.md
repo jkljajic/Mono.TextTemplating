@@ -1,4 +1,6 @@
-# Mono.TextTemplating — Architecture
+# T4 Studio Architecture
+
+T4 Studio is the product identity for this fork. The core engine assembly is `T4Studio.Engine`, and the runtime namespace is `T4Studio`.
 
 ## Pipeline
 
@@ -66,7 +68,7 @@
 
 ## Namespaces
 
-- **`Mono.TextTemplating`** — Engine core: tokenizer, parser, compiler, template runner
+- **`T4Studio`** — Engine core: tokenizer, parser, compiler, template runner
 - **`Microsoft.VisualStudio.TextTemplating`** — Public API contracts matching VS T4 SDK
 
 ## Cross-Cutting Concerns
@@ -78,3 +80,5 @@
 | File I/O | `File.ReadAllText` / `File.WriteAllText` | Same + async overloads |
 | Error handling | `CompilerErrorCollection` | Same |
 | Extensibility | `DirectiveProcessor`, `ITextTemplatingEngineHost` | Same + `ITemplateCompiler` |
+
+

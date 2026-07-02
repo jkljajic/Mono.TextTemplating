@@ -6,7 +6,7 @@
       "type": "coreclr",
       "request": "launch",
       "preLaunchTask": "build-all",
-      "program": "${workspaceFolder}/src/Mono.TextTemplating.Cli/bin/Debug/net10.0/TextTransform.dll",
+      "program": "${workspaceFolder}/src/T4Studio.Cli/bin/Debug/net10.0/T4Studio.Cli.dll",
       "args": [
         "-r",
         "${workspaceFolder}/samples/SignalR.TsGeneration/bin/Debug/net10.0/SignalR.TsGeneration.dll",
@@ -21,7 +21,7 @@
       "type": "coreclr",
       "request": "launch",
       "preLaunchTask": "build-all",
-      "program": "${workspaceFolder}/src/Mono.TextTemplating.Cli/bin/Debug/net10.0/TextTransform.dll",
+      "program": "${workspaceFolder}/src/T4Studio.Cli/bin/Debug/net10.0/T4Studio.Cli.dll",
       "args": [
         "-r",
         "${workspaceFolder}/samples/SignalR.TsGeneration/bin/Debug/net10.0/SignalR.TsGeneration.dll",
@@ -33,3 +33,4 @@
     }
   ]
 }
+

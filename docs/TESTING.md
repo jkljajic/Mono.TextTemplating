@@ -1,6 +1,8 @@
-# Testing Strategy — Mono.TextTemplating
+# Testing Strategy - T4 Studio
 
-Comprehensive test coverage for the T4 template engine. **65 tests, all passing.**
+The test projects keep `T4Studio` names because the runtime API and test assembly names remain compatible.
+
+Comprehensive test coverage for the T4 template engine. **64 tests, all passing.**
 
 ## Test Suite Overview
 
@@ -13,7 +15,7 @@ Comprehensive test coverage for the T4 template engine. **65 tests, all passing.
 | `RoslynCompilerTests.cs` | 8 | Roslyn backend — framework refs, duplicates, debug, language mapping |
 | `DiTemplateHostTests.cs` | 20 | DI host — service resolution, session, parameters |
 | `SignalRTemplateTests.cs` | 8 | Full hub → TypeScript template integration |
-| **Total** | **65** | |
+| **Current test run** | **64** | `dotnet test -c Release` |
 
 ## Edge Cases Covered
 
@@ -78,13 +80,13 @@ Fluent builder API, service resolution, session state, parameter passing.
 
 ```bash
 # All tests
-dotnet test tests/Mono.TextTemplating.Tests -c Release
+dotnet test tests/T4Studio.Tests -c Release
 
 # Specific category
-dotnet test tests/Mono.TextTemplating.Tests -c Release --filter "FullyQualifiedName~EdgeCases"
+dotnet test tests/T4Studio.Tests -c Release --filter "FullyQualifiedName~EdgeCases"
 
 # With coverage
-dotnet test tests/Mono.TextTemplating.Tests -c Release --collect:"XPlat Code Coverage"
+dotnet test tests/T4Studio.Tests -c Release --collect:"XPlat Code Coverage"
 ```
 
 ## Test Fixture Pattern
@@ -118,3 +120,5 @@ public class MyTests
     }
 }
 ```
+
+

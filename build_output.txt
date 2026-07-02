@@ -1,0 +1,12 @@
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+  Mono.TextTemplating -> E:\Development_Repositories\AI\Mono.TextTemplating\src\Mono.TextTemplating\bin\Debug\net10.0\Mono.TextTemplating.dll
+  Mono.TextTemplating.Build -> E:\Development_Repositories\AI\Mono.TextTemplating\src\Mono.TextTemplating.Build\bin\Debug\net10.0\Mono.TextTemplating.Build.dll
+  Mono.TextTemplating.Tests -> E:\Development_Repositories\AI\Mono.TextTemplating\tests\Mono.TextTemplating.Tests\bin\Debug\net10.0\Mono.TextTemplating.Tests.dll
+  Mono.TextTemplating.Cli -> E:\Development_Repositories\AI\Mono.TextTemplating\src\Mono.TextTemplating.Cli\bin\Debug\net10.0\TextTransform.dll
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:01.85

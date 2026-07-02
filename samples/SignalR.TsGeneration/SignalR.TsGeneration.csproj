@@ -6,9 +6,17 @@
     <ImplicitUsings>disable</ImplicitUsings>
     <RootNamespace>SignalR.TsGeneration</RootNamespace>
     <IsPackable>false</IsPackable>
+    <WarnOnPackingNonPackableProject>false</WarnOnPackingNonPackableProject>
+    <T4StudioCommand>dotnet &quot;$(MSBuildThisFileDirectory)..\..\src\T4Studio.Cli\bin\$(Configuration)\net10.0\T4Studio.Cli.dll&quot;</T4StudioCommand>
   </PropertyGroup>
 
-  <Import Project="..\..\src\Mono.TextTemplating.Build\build\Mono.TextTemplating.Build.props" />
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\T4Studio.Cli\T4Studio.Cli.csproj"
+                      ReferenceOutputAssembly="false"
+                      PrivateAssets="all" />
+  </ItemGroup>
+
+  <Import Project="..\..\src\T4Studio.Build\build\T4Studio.Build.props" />
 
   <!-- .tt generates .ts, not .cs -->
   <ItemGroup>
@@ -17,6 +25,22 @@
     </T4PostBuildTemplate>
   </ItemGroup>
 
-  <Import Project="..\..\src\Mono.TextTemplating.Build\build\Mono.TextTemplating.Build.targets" />
+  <Import Project="..\..\src\T4Studio.Build\build\T4Studio.Build.targets" />
+
+  <!-- Visual Studio IDE: register .tt with T4 custom tool, nest generated .ts under source -->
+  <ItemGroup>
+    <None Include="Templates\HubClientGenerator.tt">
+      <Generator>T4Studio</Generator>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="NewFolder\" />
+  </ItemGroup>
 
 </Project>
+

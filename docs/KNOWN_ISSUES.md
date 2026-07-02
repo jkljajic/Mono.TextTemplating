@@ -65,4 +65,5 @@
 
 ### MSBuild Task Assembly Version Mismatch
 
-When using the `Mono.TextTemplating.Build` package, ensure the task DLL and its dependencies in `tasks/net10.0/` are from the same build. Version mismatches between `Mono.TextTemplating.dll` copies causes `InvalidCastException` when loading generated template types.
+When using the `T4Studio.Build` package, ensure the task DLL and its dependencies in `tasks/net10.0/` are from the same build. Version mismatches between `T4Studio.Engine.dll` copies causes `InvalidCastException` when loading generated template types.
+

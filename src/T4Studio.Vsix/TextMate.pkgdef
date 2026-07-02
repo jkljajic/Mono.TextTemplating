@@ -1,0 +1,10 @@
+[$RootKey$\TextMate\Repositories\t4]
+"scopeName"="text.t4"
+"fileTypes"=".tt;.t4;.ttinclude"
+"path"="$PackageFolder$\Grammars\t4.tmLanguage.json"
+
+[$RootKey$\Generators\{FAE04EC1-301F-11d3-BF4B-00C04F79EFBC}\T4Studio]
+@="T4 Studio Template Generator"
+"CLSID"="{a1b2c3d4-e5f6-7890-abcd-ef1234567890}"
+"GeneratesDesignTimeSource"=dword:00000001
+

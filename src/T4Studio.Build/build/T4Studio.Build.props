@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <!--
+    T4Studio.Build.props
+    Auto-discovers .tt files and configures T4 item groups.
+  -->
+
+  <PropertyGroup>
+    <T4TemplateOutputDir Condition="'$(T4TemplateOutputDir)' == ''">$(OutDir)</T4TemplateOutputDir>
+    <T4Preprocess Condition="'$(T4Preprocess)' == ''">false</T4Preprocess>
+    <TextTemplatingEnabled Condition="'$(TextTemplatingEnabled)' == ''">false</TextTemplatingEnabled>
+  </PropertyGroup>
+
+  <!-- Discover .tt files. Run after build (T4PostBuildTemplate pipeline).
+       Set EnableDefaultT4Items=false in your .csproj to opt out. -->
+  <ItemGroup Condition="'$(EnableDefaultT4Items)' != 'false'">
+    <T4PostBuildTemplate Include="**\*.tt" Exclude="$(DefaultItemExcludes)">
+      <Generator>T4StudioFileGenerator</Generator>
+      <LastGenOutput>$(T4TemplateOutputDir)%(RecursiveDir)%(Filename).generated.cs</LastGenOutput>
+      <!-- Add T4Param_ metadata to pass parameters to the template -->
+      <!-- T4Param_TargetAssembly=$(TargetPath) — injected by .targets -->
+    </T4PostBuildTemplate>
+    <None Remove="@(T4PostBuildTemplate)" />
+  </ItemGroup>
+
+</Project>
+

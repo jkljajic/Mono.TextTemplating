@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011">
+  <Metadata>
+    <Identity Id="T4Studio.Vsix.5c1f5e12-7a3b-4efd-b2c8-9a0f1d3e5b7c" Version="0.1.0" Language="en-US" Publisher="t4studio" />
+    <DisplayName>T4 Studio - T4 Language Support</DisplayName>
+    <Description xml:space="preserve">T4 (.tt) text template syntax highlighting, bracket matching, and debugging support for Visual Studio 2022. Powered by the T4 Studio engine.</Description>
+    <MoreInfo>https://github.com/jkljajic/T4Studio</MoreInfo>
+    <GettingStartedGuide>https://github.com/jkljajic/T4Studio</GettingStartedGuide>
+    <Tags>t4;texttemplating;code-generation;template;tt;t4studio;syntax highlighting;debug</Tags>
+  </Metadata>
+
+  <Installation>
+    <InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[17.0,18.0)">
+      <ProductArchitecture>amd64</ProductArchitecture>
+    </InstallationTarget>
+  </Installation>
+
+  <Dependencies>
+    <Dependency Id="Microsoft.Framework.NDP" DisplayName="Microsoft .NET Framework" Version="[4.7.2,)" />
+  </Dependencies>
+
+  <Assets>
+    <Asset Type="Microsoft.VisualStudio.VsPackage" Path="T4Studio.Vsix.pkgdef" />
+  </Assets>
+
+  <Prerequisites>
+    <Prerequisite Id="Microsoft.VisualStudio.Component.CoreEditor" Version="[17.0,18.0)" DisplayName="Visual Studio core editor" />
+  </Prerequisites>
+</PackageManifest>
+

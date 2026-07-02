@@ -1,9 +1,9 @@
 {
-  "name": "t4-syntax",
-  "displayName": "T4 Template Syntax Highlighting",
-  "description": "TextMate grammar for .tt (T4) template files with directives, template blocks, and embedded C# highlighting",
-  "version": "1.1.0",
-  "publisher": "mono-texttemplating",
+  "name": "t4studio-vscode",
+  "displayName": "T4 Studio",
+  "description": "T4 Studio syntax highlighting for .tt and .t4 template files with directives, template blocks, and embedded C# highlighting",
+  "version": "0.1.0",
+  "publisher": "t4studio",
   "engines": { "vscode": "^1.85.0" },
   "categories": ["Programming Languages"],
   "contributes": {

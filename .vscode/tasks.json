@@ -7,7 +7,7 @@
       "type": "process",
       "args": [
         "build",
-        "${workspaceFolder}/src/Mono.TextTemplating.Cli/Mono.TextTemplating.Cli.csproj",
+        "${workspaceFolder}/src/T4Studio.Cli/T4Studio.Cli.csproj",
         "--configuration",
         "Debug"
       ],
@@ -32,3 +32,4 @@
     }
   ]
 }
+

@@ -39,15 +39,20 @@ Use simple tag-based releases for the initial T4 Studio packages.
    git push origin v0.1.0
    ```
 
-10. Verify the `publish-nuget.yml` GitHub Actions run.
+10. Verify the `ci.yml` GitHub Actions run.
 11. Verify the packages on nuget.org.
 
-## Required Secret
+## Trusted Publishing
 
-Set this GitHub repository secret before pushing a release tag:
+NuGet publishing uses trusted publishing from GitHub Actions. No `NUGET_API_KEY` secret is required.
+
+NuGet must be configured to trust:
 
 ```text
-NUGET_API_KEY
+Repository owner: jkljajic
+Repository: T4Studio
+Workflow: ci.yml
+Environment: production
 ```
 
-The publish workflow pushes only `.nupkg` files to `https://api.nuget.org/v3/index.json` and uses `--skip-duplicate`.
+The publish job requests GitHub's OIDC token with `id-token: write`, runs only for `v*.*.*` tags, and pushes only `.nupkg` files to `https://api.nuget.org/v3/index.json` with `--skip-duplicate`.

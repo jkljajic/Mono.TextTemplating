@@ -170,14 +170,14 @@ These are editor extension assets, not NuGet packages.
 
 ## Release
 
-Packages are published by the GitHub Actions workflow in `.github/workflows/publish-nuget.yml` when a tag matching `v*.*.*` is pushed.
+Packages are built by `.github/workflows/ci.yml`. When a tag matching `v*.*.*` is pushed, the same workflow publishes to NuGet using NuGet trusted publishing and the `production` GitHub environment.
 
 ```bash
 git tag v0.1.0
 git push origin v0.1.0
 ```
 
-The workflow requires the `NUGET_API_KEY` repository secret.
+No NuGet API key is required. NuGet must trust repository `jkljajic/T4Studio`, workflow `ci.yml`, and environment `production`.
 
 See [docs/release.md](docs/release.md) for the full checklist.
 

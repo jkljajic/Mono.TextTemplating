@@ -92,7 +92,7 @@ jobs:
             dotnet nuget push $package.FullName `
               --source "https://api.nuget.org/v3/index.json" `
               --api-key "${{ steps.nuget-login.outputs.NUGET_API_KEY }}" `
-              --skip-duplicate
+              --skip-duplicate `
                --no-symbols
           }
 
@@ -107,7 +107,7 @@ jobs:
             dotnet nuget push $package.FullName `
               --source "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json" `
               --api-key "${{ secrets.GITHUB_TOKEN }}" `
-              --skip-duplicate
+              --skip-duplicate `
                --no-symbols
           }
 
